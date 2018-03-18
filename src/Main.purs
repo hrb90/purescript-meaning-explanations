@@ -308,14 +308,18 @@ Here's the proof:
 -}
 
 prfIntuitionisticLem :: forall a. Not (Not (Lem a))
+-- Desugar the outside Not; given a proof of ~(p || ~p), we want to produce ⊥.
 prfIntuitionisticLem prfNotLem =
+  -- Now desugar the inside Not; our (hypothetical) proof lets us produce ⊥ given a proof of (p || ~p). 
+  -- So given a proof of either p or ~p, we can produce ⊥, which is what we want.
   prfNotLem (prfOrIntroductionLeft prfNotP)
-  where prfNotP = \p -> prfNotLem (prfOrIntroductionRight p)
+  -- And we can prove ~p because if we had a proof of p, we could use our proof of ~(p || ~p) to produce ⊥.
+  where prfNotP = \prfP -> prfNotLem (prfOrIntroductionRight prfP)
 
 {-
 It's also a theorem of intuitionistic logic that the law of the excluded middle is equivalent to the law of double negation elimination.
 
-We give proofs below:
+We give proofs below; the reader is encouraged to walk through them in English or in the natural language of their choice.
 -}
 
 prfLemImpliesDne :: (forall a. Lem a) -> (forall b. Not (Not b) -> b)
